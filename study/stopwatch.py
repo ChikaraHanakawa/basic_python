@@ -16,12 +16,22 @@ class Timer:
         self.rap_time = 0
         self.split_time = 0
 
+        self.time_label = tk.Label(root, text="00:00:00", font=("Helvetica", 48), fg="#fff", bg="#333")
+        self.time_label.pack(pady=20)
+        button_frame = tk.Frame(root, bg="gray")
+        button_frame.pack()
+
+        self.lap_label = tk.Label(root, text="Lap Time: 00:00:00", font=("Helvetica", 24), fg="#fff", bg="#333")
+        self.lap_label.pack(pady=20)
+        button_frame = tk.Frame(root, bg="gray")
+        button_frame.pack()
+
         # Create the buttons
-        self.start_button = tk.Button(self.root, text="Start", command=self.start, bg="green", fg="white")
-        self.stop_button = tk.Button(self.root, text="Stop", command=self.stop, bg="red", fg="white")
-        self.reset_button = tk.Button(self.root, text="Reset", command=self.reset, bg="blue", fg="white")
-        self.lap_button = tk.Button(self.root, text="Lap", command=self.lap, bg="yellow", fg="white")
-        self.split_button = tk.Button(self.root, text="Split", command=self.split, bg="purple", fg="white")
+        self.start_button = self.create_buttons(button_frame, "Start", self.start, "green")
+        self.stop_button = self.create_buttons(button_frame, "Stop", self.stop, "red")
+        self.reset_button = self.create_buttons(button_frame, "Reset", self.reset, "blue")
+        self.lap_button = self.create_buttons(button_frame, "Lap", self.lap, "orange")
+        self.split_button = self.create_buttons(button_frame, "Split", self.split, "purple")
 
     def create_buttons(self, frame, text, command, color):
         button = tk.Button(frame, text=text, command=command, bg=color, fg="white")
@@ -30,7 +40,7 @@ class Timer:
     
     def update_time(self):
         if self.running:
-            elapsed_time = self.end_time + (time.now() - self.start_time).total_seconds()
+            elapsed_time = int(self.end_time + (time.time() - self.start_time))
         else:
             elapsed_time = self.end_time
         
@@ -50,11 +60,8 @@ class Timer:
     def stop(self):
         if self.running:
             self.running = False
-            self.end_time += (time.now() - self.start_time).total_seconds()
-        return self.get_time()
-
-    def get_time(self):
-        return self.end_time - self.start_time
+            self.end_time += int((time.time() - self.start_time))
+            self.update_time()
 
     def reset(self):
         self.running = False
